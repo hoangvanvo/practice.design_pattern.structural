@@ -20,10 +20,10 @@ namespace Practice.DesignPattern.Structural.Composite
         [HttpGet("basic")]
         public void BasicDemo()
         {
-            // Composition root (Program.cs / Startup.cs)
-            Decorator.Basic.IOrderService service = new Decorator.Basic.OrderService();
-            // Execute
+            IOrderService service = new OrderService();
             service.PlaceOrder(new Order { Id = 123 });
+            IOrderService service2 = new OrderServiceWithLoggingAndRetry(service);
+            service2.PlaceOrder(new Order { Id = 456 });
         }
 
         [HttpPost("pattern")]
