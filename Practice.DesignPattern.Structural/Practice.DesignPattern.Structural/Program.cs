@@ -1,6 +1,7 @@
 using Practice.DesignPattern.Structural.Bridge.DesignPattern;
 using Practice.DesignPattern.Structural.Facade.Contract;
 using Practice.DesignPattern.Structural.Facade.Data;
+using Practice.DesignPattern.Structural.Proxy.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,21 @@ builder.Services.AddSingleton<IInventoryService, InventoryService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IPaymentService, PaymentService>();
 builder.Services.AddSingleton<IShippingService, ShippingService>();
+//DI Proxy Pattern
+builder.Services.AddSingleton<Practice.DesignPattern.Structural.Proxy.Contracts.IOrderService, Practice.DesignPattern.Structural.Proxy.Contracts.OrderService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<OrderServiceProxy>();
+builder.Services.AddTransient<IOrderServiceProxy>(provider =>
+{
+    IOrderServiceProxy service = provider.GetRequiredService<OrderServiceProxy>();
+    service = new AuthorizationOrderServiceProxy(service,
+             provider.GetRequiredService<IHttpContextAccessor>());
+    service = new LoggingOrderServiceProxy(service,
+             provider.GetRequiredService<ILogger<LoggingOrderServiceProxy>>());
+    service = new RetryOrderServiceProxy(service);
+    return service;
+});
 
 var app = builder.Build();
 
