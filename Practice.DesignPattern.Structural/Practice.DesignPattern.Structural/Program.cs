@@ -1,6 +1,6 @@
-using Practice.DesignPattern.Structural.Adapter.Basic;
-using Practice.DesignPattern.Structural.Adapter.DesignPattern;
 using Practice.DesignPattern.Structural.Bridge.DesignPattern;
+using Practice.DesignPattern.Structural.Facade.Contract;
+using Practice.DesignPattern.Structural.Facade.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +20,11 @@ builder.Services.AddSingleton<PaymentFactory>();
 //DI Decorator Pattern
 builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.Basic.IOrderService, Practice.DesignPattern.Structural.Decorator.Basic.OrderService>();
 builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.DesignPattern.IOrderService, Practice.DesignPattern.Structural.Decorator.DesignPattern.OrderService>();
+//DI Facde Pattern
+builder.Services.AddSingleton<IInventoryService, InventoryService>();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IPaymentService, PaymentService>();
+builder.Services.AddSingleton<IShippingService, ShippingService>();
 
 var app = builder.Build();
 
