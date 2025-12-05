@@ -1,3 +1,8 @@
+using Practice.DesignPattern.Structural.BigDemo.Contracts;
+using Practice.DesignPattern.Structural.BigDemo.Data.Facade;
+using Practice.DesignPattern.Structural.BigDemo.Data.Factory;
+using Practice.DesignPattern.Structural.BigDemo.Data.Resolver;
+using Practice.DesignPattern.Structural.BigDemo.Infrastructure;
 using Practice.DesignPattern.Structural.Bridge.DesignPattern;
 using Practice.DesignPattern.Structural.Facade.Contract;
 using Practice.DesignPattern.Structural.Facade.Data;
@@ -41,6 +46,23 @@ builder.Services.AddTransient<IOrderServiceProxy>(provider =>
     service = new RetryOrderServiceProxy(service);
     return service;
 });
+
+//DI FOR BIG DEMO
+// Infrastructure
+builder.Services.AddSingleton<StripeClient>();
+builder.Services.AddSingleton<PaypalClient>();
+builder.Services.AddSingleton<Practice.DesignPattern.Structural.BigDemo.Infrastructure.RateLimiter>();
+// Factories (register each concrete factory)
+builder.Services.AddTransient<StripeFactory>();
+builder.Services.AddTransient<PaypalFactory>();
+// Register the factories as the interface so resolver can get all
+builder.Services.AddTransient<IPaymentProviderFactory>(sp => sp.GetRequiredService<StripeFactory>());
+builder.Services.AddTransient<IPaymentProviderFactory>(sp => sp.GetRequiredService<PaypalFactory>());
+// Register resolver and facade
+builder.Services.AddSingleton<PaymentFactoryResolver>();
+builder.Services.AddScoped<PaymentFacade>();
+// Logging for decorators (built-in)
+builder.Services.AddLogging();
 
 var app = builder.Build();
 
