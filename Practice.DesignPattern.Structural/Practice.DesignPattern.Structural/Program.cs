@@ -25,7 +25,20 @@ builder.Services.AddSingleton<LoggerFactory>();
 builder.Services.AddSingleton<PaymentFactory>();
 //DI Decorator Pattern
 builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.Basic.IOrderService, Practice.DesignPattern.Structural.Decorator.Basic.OrderService>();
-builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.DesignPattern.IOrderService, Practice.DesignPattern.Structural.Decorator.DesignPattern.OrderService>();
+builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.DesignPattern.IOrderService>(provider =>
+{
+    var baseService = new Practice.DesignPattern.Structural.Decorator.DesignPattern.OrderService();
+
+    // Decorator: Caching -> Retry -> Logging
+    var cachingDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.CachingOrderServiceDecorator(baseService);
+    var retryDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.RetryOrderServiceDecorator(cachingDecorator);
+    var loggingDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.LoggingOrderServiceDecorator(
+        retryDecorator,
+        provider.GetRequiredService<ILogger<Practice.DesignPattern.Structural.Decorator.DesignPattern.LoggingOrderServiceDecorator>>()
+    );
+
+    return loggingDecorator; // Tr? v? decorator ngoài cùng
+});
 //DI Facde Pattern
 builder.Services.AddSingleton<IInventoryService, InventoryService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
