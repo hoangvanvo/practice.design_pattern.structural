@@ -1,3 +1,4 @@
+using Practice.DesignPattern.Structural.Adapter.DesignPattern;
 using Practice.DesignPattern.Structural.BigDemo.Contracts;
 using Practice.DesignPattern.Structural.BigDemo.Data.Facade;
 using Practice.DesignPattern.Structural.BigDemo.Data.Factory;
@@ -19,6 +20,8 @@ builder.Services.AddOpenApi();
 // Thêm Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//DI Adapter Pattern
+builder.Services.AddSingleton<PatternDemo.LoggerFactory>();
 
 //DI Bridge Pattern
 builder.Services.AddSingleton<LoggerFactory>();
