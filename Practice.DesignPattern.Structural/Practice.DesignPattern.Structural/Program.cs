@@ -7,6 +7,7 @@ using Practice.DesignPattern.Structural.BigDemo.Infrastructure;
 using Practice.DesignPattern.Structural.Bridge.DesignPattern;
 using Practice.DesignPattern.Structural.Facade.Contract;
 using Practice.DesignPattern.Structural.Facade.Data;
+using Practice.DesignPattern.Structural.Flyweight.DTO;
 using Practice.DesignPattern.Structural.Proxy.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +48,8 @@ builder.Services.AddSingleton<IInventoryService, InventoryService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IPaymentService, PaymentService>();
 builder.Services.AddSingleton<IShippingService, ShippingService>();
+//DI Flyweight Pattern
+builder.Services.AddSingleton<BuildingFlyweightFactory>();
 //DI Proxy Pattern
 builder.Services.AddSingleton<Practice.DesignPattern.Structural.Proxy.Contracts.IOrderService, Practice.DesignPattern.Structural.Proxy.Contracts.OrderService>();
 

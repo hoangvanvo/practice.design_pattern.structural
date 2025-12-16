@@ -7,6 +7,13 @@ namespace Practice.DesignPattern.Structural.Flyweight
     [ApiController]
     public class FlyweightController : ControllerBase
     {
+        private readonly BuildingFlyweightFactory _factory;
+
+        public FlyweightController(BuildingFlyweightFactory factory)
+        {
+            _factory = factory;
+        }
+
         [HttpGet("basic")]
         public IActionResult Basic()
         {
@@ -29,12 +36,11 @@ namespace Practice.DesignPattern.Structural.Flyweight
         [HttpGet("pattern")]
         public IActionResult Pattern()
         {
-            var factory = new BuildingFlyweightFactory();
             var buildings = new List<BuildingContext>();
 
             for (int i = 0; i < 1_000_000; i++)
             {
-                var flyweight = factory.GetBuilding("Apartment");
+                var flyweight = _factory.GetBuilding("Apartment");
                 buildings.Add(new BuildingContext(
                     Random.Shared.Next(0, 10000),
                     Random.Shared.Next(0, 10000),
