@@ -1,46 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Practice.DesignPattern.Structural.Bridge.Basic;
-using Practice.DesignPattern.Structural.Bridge.DesignPattern;
+using Practice.DesignPattern.Structural.Bridge.Pattern;
 
 namespace Practice.DesignPattern.Structural.Bridge
 {
-    [Route("api/structural/v1/bridge")]
     [ApiController]
+    [Route("api/structural/v1/bridge")]
     public class BridgeController : ControllerBase
     {
-        private readonly PaymentFactory paymentFactory;
 
-        public BridgeController(PaymentFactory paymentFactory)
+        [HttpPost("device/turn-on")]
+        public void TurnOn([FromServices] IDevice device)
         {
-            this.paymentFactory = paymentFactory;
+            var deviceAction = new DeviceAction(device);
+            deviceAction.TurnOn();
         }
 
-        [HttpPost("basic")]
-        public string BasicDemo([FromBody] BridgeRequest request)
+        [HttpPost("device/turn-off")]
+        public void TurnOff([FromServices] IDevice device)
         {
-            Payment payment;
-            switch (request.PaymentSource)
-            {
-                case 1: // Paypal
-                    payment = request.PaymentType == 1 ? new PaypalOneTimePayment() as Payment : new PaypalSubscriptionPayment() as Payment;
-                    break;
-                case 2: // Stripe
-                    payment = request.PaymentType == 1 ? new StripeOneTimePayment() as Payment : new StripeSubscriptionPayment() as Payment;
-                    break;
-                case 3: // Momo
-                    payment = request.PaymentType == 1 ? new MomoOneTimePayment() as Payment : new MomoSubscriptionPayment() as Payment;
-                    break;
-                default:
-                    return "[ERROR] Nguồn thanh toán không hợp lệ.";
-            }
-            return payment.Pay(request.Amount, request.CurrencyUnit);
+            var deviceAction = new DeviceAction(device);
+            deviceAction.TurnOff();
         }
 
-        [HttpPost("pattern")]
-        public string PatternDemo([FromBody] BridgeRequest request)
+        [HttpPost("device/working")]
+        public void Working([FromServices] IDevice device)
         {
-            var payment = paymentFactory.GetPayment(request.PaymentSource, request.PaymentType);
-            return payment.Pay(request.PaymentType, request.Amount, request.CurrencyUnit);
+            var deviceAction = new DeviceAction(device);
+            deviceAction.Working();
         }
     }
 }
