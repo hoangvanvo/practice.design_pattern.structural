@@ -1,4 +1,7 @@
 using Practice.DesignPattern.Structural.Adapter;
+using Practice.DesignPattern.Structural.Bridge.Pattern;
+using Practice.DesignPattern.Structural.Decorator.Normal;
+using Practice.DesignPattern.Structural.Decorator.Pattern;
 using Practice.DesignPattern.Structural.Facade.Contract;
 using Practice.DesignPattern.Structural.Facade.Data;
 using Practice.DesignPattern.Structural.Flyweight.DTO;
@@ -20,23 +23,20 @@ builder.Services.AddSingleton<IReportData, ReportDataService>();
 builder.Services.AddSingleton<IReportDataOverview, ReportDataAdapter>();
 
 //DI Bridge Pattern
-builder.Services.AddSingleton<>
+builder.Services.AddSingleton<DeviceAction>();
 
 //DI Decorator Pattern
-builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.Basic.IOrderService, Practice.DesignPattern.Structural.Decorator.Basic.OrderService>();
-builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.DesignPattern.IOrderService>(provider =>
+builder.Services.AddSingleton<IReportDataV2, ReportDataV2>();
+builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.IReportData>(provider =>
 {
-    var baseService = new Practice.DesignPattern.Structural.Decorator.DesignPattern.OrderService();
+    Practice.DesignPattern.Structural.Decorator.IReportData baseService = new Practice.DesignPattern.Structural.Decorator.ReportDataService();
 
     // Decorator: Caching -> Retry -> Logging
-    var cachingDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.CachingOrderServiceDecorator(baseService);
-    var retryDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.RetryOrderServiceDecorator(cachingDecorator);
-    var loggingDecorator = new Practice.DesignPattern.Structural.Decorator.DesignPattern.LoggingOrderServiceDecorator(
-        retryDecorator,
-        provider.GetRequiredService<ILogger<Practice.DesignPattern.Structural.Decorator.DesignPattern.LoggingOrderServiceDecorator>>()
-    );
+    baseService = new ReportDataCacheDecorator(baseService);
+    baseService = new ReportDataRetryDecorator(baseService);
+    baseService = new ReportDataCatchDecorator(baseService);
 
-    return loggingDecorator; // Tr? v? decorator ngoài cùng
+    return baseService;
 });
 //DI Facde Pattern
 builder.Services.AddSingleton<IInventoryService, InventoryService>();
