@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Practice.DesignPattern.Structural.Flyweight.DTO;
+using Practice.DesignPattern.Structural.Flyweight.Pattern;
 
 namespace Practice.DesignPattern.Structural.Flyweight
 {
@@ -7,48 +7,30 @@ namespace Practice.DesignPattern.Structural.Flyweight
     [ApiController]
     public class FlyweightController : ControllerBase
     {
-        private readonly BuildingFlyweightFactory _factory;
+        private readonly GachFlyweightFactory _gachFlyweightFactory;
+        private static readonly Random _random = new();
 
-        public FlyweightController(BuildingFlyweightFactory factory)
+        public FlyweightController
+        (
+            GachFlyweightFactory gachFlyweightFactory
+        )
         {
-            _factory = factory;
+            _gachFlyweightFactory = gachFlyweightFactory;
         }
 
-        [HttpGet("basic")]
-        public IActionResult Basic()
+        [HttpPost("tao-gach")]
+        public List<GachNew> TaoGach()
         {
-            var buildings = new List<Building>();
-
-            for (int i = 0; i < 1_000_000; i++)
+            var list = new List<GachNew>();
+            var listLoai = new List<string>() { "GO", "DA", "XI MANG" };
+            for (int i = 0; i < 100; i++)
             {
-                buildings.Add(new Building
-                {
-                    Type = "Apartment",
-                    Model3D = Array.Empty<byte>(),
-                    Texture = Array.Empty<byte>(),
-                    X = Random.Shared.Next(0, 10000),
-                    Y = Random.Shared.Next(0, 10000)
-                });
+                var loaiGach = listLoai[Random.Shared.Next(listLoai.Count)];
+                var flyweight = _gachFlyweightFactory.GetFlyweight(loaiGach);
+                var gach = new GachNew(flyweight, i, i, i);
+                list.Add(gach);
             }
-            return Ok();
-        }
-
-        [HttpGet("pattern")]
-        public IActionResult Pattern()
-        {
-            var buildings = new List<BuildingContext>();
-
-            for (int i = 0; i < 1_000_000; i++)
-            {
-                var flyweight = _factory.GetBuilding("Apartment");
-                buildings.Add(new BuildingContext(
-                    Random.Shared.Next(0, 10000),
-                    Random.Shared.Next(0, 10000),
-                    flyweight
-                ));
-            }
-
-            return Ok("Loaded 1 million building with flyweight.");
+            return list;
         }
     }
 }

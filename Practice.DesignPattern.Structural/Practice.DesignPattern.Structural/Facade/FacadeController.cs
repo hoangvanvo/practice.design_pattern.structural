@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Practice.DesignPattern.Structural.Decorator.Basic;
-using Practice.DesignPattern.Structural.Facade.Contract;
 using Practice.DesignPattern.Structural.Facade.Pattern;
 
 namespace Practice.DesignPattern.Structural.Facade
@@ -9,45 +7,26 @@ namespace Practice.DesignPattern.Structural.Facade
     [ApiController]
     public class FacadeController : ControllerBase
     {
-        private readonly IInventoryService inventoryService;
-        private readonly IPaymentService paymentService;
-        private readonly IShippingService shippingService;
-        private readonly INotificationService notificationService;
-        private readonly IFacadeRepository facadeRepository;
+        private readonly ISmartHouseFacade _smartHouseFacade;
 
         public FacadeController
         (
-            IInventoryService inventoryService
-            , IPaymentService paymentService
-            , IShippingService shippingService
-            , INotificationService notificationService
-            , IFacadeRepository facadeRepository
+            ISmartHouseFacade smartHouseFacade
         )
         {
-            this.inventoryService = inventoryService;
-            this.paymentService = paymentService;
-            this.shippingService = shippingService;
-            this.notificationService = notificationService;
-            this.facadeRepository = facadeRepository;
+            _smartHouseFacade = smartHouseFacade;
         }
 
-        [HttpGet("basic")]
-        public async Task<IActionResult> Basic()
+        [HttpPost("on-movie-mode")]
+        public void OnMovieMode()
         {
-            var order = new Order { Id = 101, ProductName = "Laptop", Quantity = 1 };
-
-            await inventoryService.Reserve(order);
-            await paymentService.Charge(order);
-            await shippingService.Schedule(order);
-            await notificationService.Notify(order);
-            return Ok();
+            _smartHouseFacade.TurnOnMovieMode();
         }
 
-        [HttpGet("pattern")]
-        public async Task<IActionResult> Pattern()
+        [HttpPost("off-movie-mode")]
+        public void OffMovieMode()
         {
-            await facadeRepository.PlaceOrder(new Order { Id = 101, ProductName = "Laptop", Quantity = 1 });
-            return Ok();
+            _smartHouseFacade.TurnOffMovieMode();
         }
     }
 }

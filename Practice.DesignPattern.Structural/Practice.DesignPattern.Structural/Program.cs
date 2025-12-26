@@ -2,9 +2,10 @@ using Practice.DesignPattern.Structural.Adapter;
 using Practice.DesignPattern.Structural.Bridge.Pattern;
 using Practice.DesignPattern.Structural.Decorator.Normal;
 using Practice.DesignPattern.Structural.Decorator.Pattern;
-using Practice.DesignPattern.Structural.Facade.Contract;
-using Practice.DesignPattern.Structural.Facade.Data;
-using Practice.DesignPattern.Structural.Flyweight.DTO;
+using Practice.DesignPattern.Structural.Facade;
+using Practice.DesignPattern.Structural.Facade.Normal;
+using Practice.DesignPattern.Structural.Facade.Pattern;
+using Practice.DesignPattern.Structural.Flyweight.Pattern;
 using Practice.DesignPattern.Structural.Proxy.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,12 +40,11 @@ builder.Services.AddSingleton<Practice.DesignPattern.Structural.Decorator.IRepor
     return baseService;
 });
 //DI Facde Pattern
-builder.Services.AddSingleton<IInventoryService, InventoryService>();
-builder.Services.AddSingleton<INotificationService, NotificationService>();
-builder.Services.AddSingleton<IPaymentService, PaymentService>();
-builder.Services.AddSingleton<IShippingService, ShippingService>();
+builder.Services.AddSingleton<ISmartHouse, SmartHouse>();
+builder.Services.AddSingleton<ISmartHouseFacade, SHouseFacade>();
+
 //DI Flyweight Pattern
-builder.Services.AddSingleton<BuildingFlyweightFactory>();
+builder.Services.AddSingleton<GachFlyweightFactory>();
 //DI Proxy Pattern
 builder.Services.AddSingleton<Practice.DesignPattern.Structural.Proxy.Contracts.IOrderService, Practice.DesignPattern.Structural.Proxy.Contracts.OrderService>();
 
