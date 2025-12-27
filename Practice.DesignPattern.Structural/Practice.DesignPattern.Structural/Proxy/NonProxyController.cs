@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Practice.DesignPattern.Structural.Proxy.Pattern;
 
 namespace Practice.DesignPattern.Structural.Proxy
 {
-    [Route("api/structural/v1/proxy")]
+    [Route("api/structural/v1/non-proxy")]
     [ApiController]
-    public class ProxyController
+    public class NonProxyController
     {
         private readonly IService _service;
 
-        public ProxyController(IService service)
+        public NonProxyController
+        (
+            IService service
+        )
         {
             _service = service;
         }

@@ -6,7 +6,9 @@ using Practice.DesignPattern.Structural.Facade;
 using Practice.DesignPattern.Structural.Facade.Normal;
 using Practice.DesignPattern.Structural.Facade.Pattern;
 using Practice.DesignPattern.Structural.Flyweight.Pattern;
-using Practice.DesignPattern.Structural.Proxy.Contracts;
+using Practice.DesignPattern.Structural.Proxy;
+using Practice.DesignPattern.Structural.Proxy.Normal;
+using Practice.DesignPattern.Structural.Proxy.Pattern;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,20 +48,9 @@ builder.Services.AddSingleton<ISmartHouseFacade, SHouseFacade>();
 //DI Flyweight Pattern
 builder.Services.AddSingleton<GachFlyweightFactory>();
 //DI Proxy Pattern
-builder.Services.AddSingleton<Practice.DesignPattern.Structural.Proxy.Contracts.IOrderService, Practice.DesignPattern.Structural.Proxy.Contracts.OrderService>();
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<OrderServiceProxy>();
-builder.Services.AddTransient<IOrderServiceProxy>(provider =>
-{
-    IOrderServiceProxy service = provider.GetRequiredService<OrderServiceProxy>();
-    service = new AuthorizationOrderServiceProxy(service,
-             provider.GetRequiredService<IHttpContextAccessor>());
-    service = new LoggingOrderServiceProxy(service,
-             provider.GetRequiredService<ILogger<LoggingOrderServiceProxy>>());
-    service = new RetryOrderServiceProxy(service);
-    return service;
-});
+builder.Services.AddSingleton<IService, RealService>();
+//builder.Services.AddSingleton<RealService>();
+//builder.Services.AddSingleton<IService, ServiceProxy>();
 
 // Logging for decorators (built-in)
 builder.Services.AddLogging();
